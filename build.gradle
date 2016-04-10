@@ -1,0 +1,23 @@
+apply from: 'arm.gradle'
+
+defaultTasks 'opq'
+
+model {
+    components {
+        opq(NativeLibrarySpec)
+
+        stm32f3x(NativeLibrarySpec) {
+            binaries.all { lib library: 'opq', linkage: 'static' }
+        }
+
+        opq_bin(NativeExecutableSpec) {
+            binaries.all {
+                lib library: 'opq', linkage: 'static'
+                lib library: 'libc', linkage: 'static'
+                lib library: 'libstdcpp', linkage: 'static'
+                lib library: 'libsupcpp', linkage: 'static'
+                lib library: 'stm32f3x', linkage: 'static'
+            }
+        }
+    }
+}

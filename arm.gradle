@@ -1,0 +1,78 @@
+apply plugin: 'c'
+apply plugin: 'cpp'
+apply plugin: 'assembler'
+
+model {
+    platforms {
+        arm32 { architecture "arm32" }
+    }
+
+    toolChains {
+        arm_none_eabi_gcc(Gcc) {
+            target 'arm32'
+
+            eachPlatform { tools ->
+                tools.cCompiler.executable = 
+                tools.cppCompiler.executable =
+                tools.assembler.executable =
+                tools.linker.executable = 'arm-none-eabi-gcc'
+            }
+        }
+    }
+
+    repositories {
+        libs(PrebuiltLibraries) {
+            def lib_path = "/usr/arm-none-eabi/lib/armv7e-m/fpu/"
+
+            libc {
+                binaries.withType(StaticLibraryBinary) {
+                    staticLibraryFile = file(lib_path + "libc_nano.a")
+                }
+            }
+
+            libstdcpp {
+                binaries.withType(StaticLibraryBinary) {
+                    staticLibraryFile = file(lib_path + "libstdc++_nano.a")
+                }
+            }
+
+            libsupcpp {
+                binaries.withType(StaticLibraryBinary) {
+                    staticLibraryFile = file(lib_path + "libsupc++_nano.a")
+                }
+            }
+        }
+    }
+
+    components {
+        all {
+            targetPlatform 'arm32'
+
+            binaries.all { 
+                def common = [
+                    '-mcpu=cortex-m4', 
+                    '-mthumb',
+                    '-mfpu=fpv4-sp-d16',
+                    '-mfloat-abi=hard',
+                    '-g',// '-O3',
+                    '-fno-exceptions',
+                    '-ffunction-sections',
+                    '-Wl,--gc-sections',
+                ]
+
+                assembler.args(*common)
+                cCompiler.args(*common)
+                cppCompiler.args(*common, '--std=c++14')
+                linker.args(*common, '-lgcc')
+           }
+        }
+
+        withType(NativeExecutableSpec) {
+            binaries.all {
+                linker.args('-u', '__vector_table', 
+                            '-Tarm-gcc-link.ld',
+                            '-nodefaultlibs', '-nostartfiles')
+            }
+        }
+    }
+}
