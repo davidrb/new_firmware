@@ -40,12 +40,12 @@ struct GPIO {
 
     static void configure( PinSet ps, GPIOAlternate af ) { 
         if( ps.mask4l != 0 ) {
-            *regs::ospeedr &= ~ps.mask4l;
-            *regs::ospeedr |= (std::uint32_t)af & ps.mask4l;
+            *regs::afrl &= ~ps.mask4l;
+            *regs::afrl |= (std::uint32_t)af & ps.mask4l;
         }
         if( ps.mask4h != 0 ) {
-            *regs::ospeedr &= ~ps.mask4h;
-            *regs::ospeedr |= (std::uint32_t)af & ps.mask4h;
+            *regs::afrh &= ~ps.mask4h;
+            *regs::afrh |= (std::uint32_t)af & ps.mask4h;
         }
     }
 

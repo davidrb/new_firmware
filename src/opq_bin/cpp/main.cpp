@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdint.h>
+#include <adc.h>
 
 #include "sys_tick.h"
 #include "led.h"
@@ -8,17 +9,30 @@
 
 #include <cstdio>
 
+#include <gpio.h>
+
+auto adc_pins = PinSet{ 1 };
+
 int main() {
-    set_sys_tick_value(8'000'000 - 1);
+    gpioa::enable_clock();
+    gpioa::configure( adc_pins, GPIOMode::Analog );
+
+    adc1::enable_clock();
+    adc1::enable();
+
+    set_sys_tick_value(1'000'000 - 1);
     enable_sys_tick();
 }
 
 int h = 42;
 
+
 extern "C"
 void sys_tick_handler() {
-    printf("Hello, World! %i\n", h++);
     toggle_led();
+
+    auto i = adc1::convert();
+    printf("ADC: %i\n", i);
 }
 
 

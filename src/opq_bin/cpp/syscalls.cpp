@@ -1,5 +1,5 @@
 #include <config.h>
-#include <uart_registers.h>
+#include <uart.h>
 
 #include <cstdlib>
 #include <sys/types.h>

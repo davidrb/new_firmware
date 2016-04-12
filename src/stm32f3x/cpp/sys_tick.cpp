@@ -6,5 +6,5 @@ void set_sys_tick_value( std::uint32_t value ) {
 }
 
 void enable_sys_tick() {
-   *stk_ctrl |= 7;
+   *stk_ctrl |= 0b111;
 }

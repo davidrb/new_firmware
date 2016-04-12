@@ -1,5 +1,5 @@
 #include <gpio.h>
-#include <rcc_registers.h>
+#include <rcc.h>
 #include <sys_tick.h>
 
 #include "config.h"
@@ -12,19 +12,17 @@ void setup_gpio() {
 
 extern "C"
 void setup_uart() {
-    auto constexpr pins = PinSet{ 9, 10 };
-
     gpioa::enable_clock();
-    gpioa::configure( pins, GPIOMode::Alternate, GPIOSpeed::High, GPIOType::PushPull, GPIOAlternate::AF7 );
+    gpioa::configure( uart_pins, GPIOMode::Alternate, GPIOSpeed::High, GPIOType::PushPull, GPIOAlternate::AF7 );
 
-    uart1::enable_clock();
-    uart1::enable_tx();
-    uart1::enable_rx();
-    uart1::enable();
+    io_uart::enable_clock();
+    io_uart::enable();
 }
 
 extern "C"
 void system_setup() {
+    enable_pll();
+
     setup_gpio();
     setup_uart();
 }

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-struct RCC {
+struct RCCRegisters {
     static volatile constexpr auto base_ptr = (std::uint32_t *)0x4002'1000;
 
     static volatile constexpr auto 
@@ -22,6 +22,6 @@ struct RCC {
         cfgr3 = base_ptr + 0x30/4;
 };
 
-using rcc = RCC;
+using rcc = RCCRegisters;
 
 #endif
